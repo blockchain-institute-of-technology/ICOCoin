@@ -7,8 +7,16 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "truffle test",
+    "deploy:ropsten": "truffle migrate --network ropsten",
+    "deploy:mainnet": "truffle migrate --network live"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "truffle": "^4.1.10",
+    "truffle-hdwallet-provider": "0.0.5",
+    "zeppelin-solidity": "^1.7.0"
+  }
 }
