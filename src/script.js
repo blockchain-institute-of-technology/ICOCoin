@@ -587,12 +587,15 @@ web3.personal.unlockAccount(web3.eth.defaultAccount);
 const tokenAdd = '0x66a4b952c3dc8885258b1f077687e944c5e3a782';
 const tokenContract = web3.eth.contract(coinABI).at(tokenAdd);//,{from:'0x09bd5Ad3D21047825adB6adb91eA9e2Bf1f88Ca5'}).at(tokenAdd);
 const saleAdd = '0x2b668a50a8d4b1b3609e38e7bd0c45456b94adc6';
-tokenContract.mint(0x66a4b952c3dc8885258b1f077687e944c5e3a782, 10);
-console.log(tokenContract.totalSupply().toString(10));
+//tokenContract.mint(0x66a4b952c3dc8885258b1f077687e944c5e3a782, 10);
+//console.log(tokenContract.totalSupply().toString(10));
 //console.log(tokenContract.toString(10));
 const crowdsaleContract = web3.eth.contract(CrowdsaleABI).at(saleAdd);
-crowdsaleContract.buyTokens(0x5B18e78B0E578D20551C11a86C0932F91c178a5f, {gas:6990000,value:10});
-console.log(tokenContract.balanceOf(0x5B18e78B0E578D20551C11a86C0932F91c178a5f).toString(10));
 
 
+//tokenContract.transferOwnership(saleAdd);
+crowdsaleContract.buyTokens(0x5B18e78B0E578D20551C11a86C0932F91c178a5f, {gas:5990000,value:10});
+console.log(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
+crowdsaleContract.buyTokens(web3.eth.accounts[0],{from: web3.eth.accounts[0], value: web3.toWei(5,"ether")});
+console.log(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
 
