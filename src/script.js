@@ -1,10 +1,20 @@
-if (typeof web3 !== 'undefined') { 
-web3 = new Web3(web3.currentProvider);
- } else { 
- // set the provider you want from W
-	web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545")); 
-}
+window.addEventListener('load', function() {
+var results;
+var web3 = window.Web3;
 
+// Checking if Web3 has been injected by the browser (Mist/MetaMask)
+if (typeof web3 !== 'undefined') {
+  // Use Mist/MetaMask's provider.
+  web3 = new Web3(web3.currentProvider);
+  console.log('Injected web3 detected.');
+
+ } else {
+   // Fallback to localhost if no web3 injection. We've configured this to
+   // use the development console's port by default.
+  var provider = new Web3.providers.HttpProvider('http://localhost:7545');
+  web3 = new Web3(provider);
+  console.log('No web3 instance injected, using Local web3.');
+ }
 let coinABI = [
 	{
 		"constant": true,
@@ -593,9 +603,26 @@ const saleAdd = '0x2b668a50a8d4b1b3609e38e7bd0c45456b94adc6';
 const crowdsaleContract = web3.eth.contract(CrowdsaleABI).at(saleAdd);
 
 
-//tokenContract.transferOwnership(saleAdd);
-crowdsaleContract.buyTokens(0x5B18e78B0E578D20551C11a86C0932F91c178a5f, {gas:5990000,value:10});
-console.log(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
-crowdsaleContract.buyTokens(web3.eth.accounts[0],{from: web3.eth.accounts[0], value: web3.toWei(5,"ether")});
-console.log(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
+//crowdsaleContract.buyTokens(0x5B18e78B0E578D20551C11a86C0932F91c178a5f, {gas:5990000,value:10});
+//console.log(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
+crowdsaleContract.buyTokens(web3.eth.accounts[0],{from: web3.eth.accounts[0], value: web3.toWei(1,"ether")});
+//console.log(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
+
+$( "#name" ).text(tokenContract.name());
+$( "#open_time").text(crowdsaleContract.openingTime());
+$( "#close_time").text(crowdsaleContract.closingTime());
+$( "#rate").text(crowdsaleContract.rate());
+$( "#supply").text(tokenContract.totalSupply().toString(10));
+$( "#balance").text(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
+$( "#account").text(web3.eth.accounts[0].toString(10));
+$( "#eth-balance").text(web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0])));
+$( "#buy" ).click(function() {
+  crowdsaleContract.buyTokens(web3.eth.accounts[0],{from: web3.eth.accounts[0], value: web3.toWei(.1,"ether")});
+  $( "#balance").text(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
+  $( "#eth-balance").text(web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0])));
+  $( "#supply").text(tokenContract.totalSupply().toString(10));
+});
+
+
+});
 
