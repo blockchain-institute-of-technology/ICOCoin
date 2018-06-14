@@ -15,8 +15,10 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^6.0.0",
+    "fs": "^0.0.1-security",
     "truffle": "^4.1.10",
     "truffle-hdwallet-provider": "0.0.5",
+    "web3": "ethereum/web3.js",
     "zeppelin-solidity": "^1.7.0"
   }
 }
