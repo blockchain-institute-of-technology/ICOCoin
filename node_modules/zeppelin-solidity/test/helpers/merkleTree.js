@@ -79,7 +79,7 @@ export default class MerkleTree {
   getHexProof (el) {
     const proof = this.getProof(el);
 
-    return this.bufArrToHexArr(proof);
+    return this.bufArrToHex(proof);
   }
 
   getPairElement (idx, layer) {
@@ -117,12 +117,12 @@ export default class MerkleTree {
     });
   }
 
-  bufArrToHexArr (arr) {
+  bufArrToHex (arr) {
     if (arr.some(el => !Buffer.isBuffer(el))) {
       throw new Error('Array is not an array of buffers');
     }
 
-    return arr.map(el => '0x' + el.toString('hex'));
+    return '0x' + arr.map(el => el.toString('hex')).join('');
   }
 
   sortAndConcat (...args) {

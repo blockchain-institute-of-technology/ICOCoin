@@ -2,13 +2,13 @@
 import MerkleTree from '../helpers/merkleTree.js';
 import { sha3, bufferToHex } from 'ethereumjs-util';
 
-var MerkleProofWrapper = artifacts.require('MerkleProofWrapper');
+var MerkleProof = artifacts.require('MerkleProof');
 
 contract('MerkleProof', function (accounts) {
   let merkleProof;
 
   before(async function () {
-    merkleProof = await MerkleProofWrapper.new();
+    merkleProof = await MerkleProof.new();
   });
 
   describe('verifyProof', function () {
