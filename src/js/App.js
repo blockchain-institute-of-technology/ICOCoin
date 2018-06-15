@@ -12,7 +12,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       tokenName:'',
-      account: '0x0',
+      account:0,
       openTime:0,
       closeTime:0,
       eth_balance:0,
@@ -38,11 +38,15 @@ class App extends React.Component {
     this.watchEvents = this.watchEvents.bind(this)
   }
 
-  buyTokens(candidateId) {
+  buyTokens(amount) {
     /*this.setState({ voting: true })
     this.electionInstance.vote(candidateId, { from: this.state.account }).then((result) =>
       this.setState({ hasVoted: true })
     )*/
+    this.crowdsaleInst.buyTokens(this.state.account, amount).then(() =>{
+      this.tokenInstance.totalSupply().then((supply) =>{ this.setState({totalSupply:supply.toString(10)})});
+      this.tokenInstance.balanceOf(this.account).then((balance) =>{this.setState({tokenBalance:balance.toString(10)})});
+    })
   }
     watchEvents() {
     /*// TODO: trigger event when vote is counted, not when component renders
@@ -55,19 +59,34 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+
+    let crowdSaleAddress;
     // TODO: Refactor with promise chain
     this.web3.eth.getCoinbase((err, account) => {
       this.account = account
+      //this.web3.eth.getBalance(account)//.then((bal) => {this.setState({eth_balance:bal.toString(10)})})
       this.setState({ account });
+        this.crowdsale.deployed().then((crowdsaleInst) => {
+        this.crowdsaleInst = crowdsaleInst
+       // crowdSaleAddress = this.crowdsaleInst.address;
+        this.crowdsaleInst.openingTime().then((time) =>{
+          this.setState({openTime:time.toString(10)})
+        })
+        this.crowdsaleInst.closingTime().then((time) =>{
+          this.setState({closeTime:time.toString(10)})
+        })
+        this.crowdsaleInst.rate().then((r) =>{
+          this.setState({rate:r.toString(10)})
+        })
+      });
+
       this.token.deployed().then((tokenInstance) => {
         this.tokenInstance = tokenInstance
-        //this.watchEvents()
+        this.watchEvents()
+        //this.tokenInstance.transferOwnership(crowdSaleAddress);
         this.tokenInstance.name().then((name) =>{ this.setState({tokenName:name})});
-        //this.tokenInstance.balanceOf(this.account).then((balance) =>{this.setState({tokenBalance:balance})});
-      });
-      this.crowdsale.deployed().then((crowdsaleInst) => {
-        this.crowdsaleInst = crowdsaleInst
-        this.crowdsaleInst.openingTime().then((time) =>{this.setState({openTime:time})})
+        this.tokenInstance.totalSupply().then((supply) =>{ this.setState({totalSupply:supply.toString(10)})});
+        this.tokenInstance.balanceOf(this.account).then((balance) =>{this.setState({tokenBalance:balance.toString(10)})});
       });
     });
   }
@@ -81,7 +100,7 @@ class App extends React.Component {
   render() {
     return (
       <div class='row'>
-        <div class='col-lg-12 text-center' >
+        <div class='col-lg-12' >
           <br/>
           { this.state.loading 
             ? <p class='text-center'>Loading...</p>
@@ -93,7 +112,8 @@ class App extends React.Component {
                 eth_balance={this.state.eth_balance}
                 rate={this.state.rate}
                 tokenBalance={this.state.tokenBalance}
-                totalSupply={this.state.totalSupply} />
+                totalSupply={this.state.totalSupply} 
+                buyTokens={this.buyTokens}/>
           }
         </div>
       </div>
@@ -161,7 +181,7 @@ $( "#balance").text(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
 $( "#account").text(web3.eth.accounts[0].toString(10));
 $( "#eth-balance").text(web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0])));
 $( "#buy" ).click(function() {
-  crowdsaleContract.buyTokens(web3.eth.accounts[0],{from: web3.eth.accounts[0], value: web3.toWei(.1,"ether")});
+  crowdsaleContractinst
   $( "#balance").text(tokenContract.balanceOf(web3.eth.accounts[0]).toString(10));
   $( "#eth-balance").text(web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0])));
   $( "#supply").text(tokenContract.totalSupply().toString(10));
